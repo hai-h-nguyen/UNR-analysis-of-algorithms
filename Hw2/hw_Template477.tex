@@ -1,0 +1,297 @@
+\documentclass[[11pts]{report}
+
+\usepackage{qtree}
+\usepackage{listings}
+\usepackage{amsmath,mathtools}
+\usepackage[ruled,longend]{algorithm2e}
+\usepackage{tikz}
+
+\title{CS 677 Homework \\ Assignment 02}
+\date{Semtember 11, 2018}
+\author{Hai Nguyen}
+
+\setlength{\topmargin}{-1cm}
+\setlength{\oddsidemargin}{0in}
+\setlength{\textwidth}{6.5in}
+\setlength{\textheight}{8.3in}
+
+\DeclareMathOperator{\Div}{div}
+\newcommand{\vect}[1]{\mathbf{#1}}
+
+
+
+
+%%Currently default settings for indentation and symbols.
+%%Try these by uncommenting this block!!!
+%%Redefine the first level symbols
+%\renewcommand{\theenumi}{\fnsymbol{enumi}-}
+%\renewcommand{\labelenumi}{\theenumi}
+%
+%%Redefine the second level symbols
+%\renewcommand{\theenumii}{\alph{enumii})}
+%\renewcommand{\labelenumii}{\theenumii}
+%
+%%Redefine the third level symbols
+%\renewcommand{\theenumiii}{\roman{enumiii}.}
+%\renewcommand{\labelenumiii}{\theenumiii}
+%
+%%Options for redefining levels
+
+
+%\arabic
+%\alph 
+%\Alph
+%\roman
+%\Roman
+%\fnsymbol
+%This ^^^ is all you need to change!!
+
+\begin{document}
+
+\maketitle
+
+\begin{enumerate}
+
+\item Consider the following recursive algorithm.
+
+\textbf{ALGORITHM} \textit{Min1}(A[0..n-1])
+\\//Input: An array A[0..n-1] of integer number
+\\\textbf{if} n = 1 return A[0]
+\\\textbf{else} \textit{temp} $\gets$ \textit{Min1}(A[0..n-2])
+\par \quad \quad \textbf{if} \textit{temp} $\leq$ A[n-1] \textbf{return} \textit{temp}
+\par \quad  \quad \textbf{else} \textbf{return} A[n-1]
+
+\begin{enumerate}
+\item What does this algorithm compute? 
+\begin{center}
+\textbf{Minimum of an array of integer numbers.}
+\end{center} 
+
+\item Set up a recurrence relation for the algorithm's basic operation count and solve it
+\par \textbf{ALGORITHM} \textit{Min1}(A[0..n-1])
+\par \textbf{if} n = 1 return A[0]  \quad [Constant time c1]
+\par\textbf{else} \textit{temp} $\gets$ \textit{Min1}(A[0..n-2])  \quad  [c2 + T(n-1)]
+\par \quad \quad \textbf{if} \textit{temp} $\leq$ A[n-1] \textbf{return} \textit{temp} \quad [Constant time c3]
+\par \quad  \quad \textbf{else} \textbf{return} A[n-1] \quad [Constant time c4]
+\\ Recurrent relationship:
+\begin{align*}
+T(1) &= c1 \\
+T(n) &= c + T(n-1)
+\end{align*}
+Solve it:
+\begin{align*}
+T(n) &= c + T(n-1) \\
+     &= T(1) + (n-1)c \\
+     &= \Theta(n)
+\end{align*}
+\end{enumerate}
+
+\item Solve the following recurrences using the method of your choice.
+
+\begin{itemize}
+
+\item $T(n) = 2T(\frac{n}{2}) + n^3$
+\\ \textit{Iteration method:}
+\\ Assume: $n = 2^k$
+\begin{align*}
+T(n) &= 2T(\frac{n}{2}) + n^3 = 2(2T(\frac{n}{4}) + (\frac{n}{2})^3) + n^3 = 4T(\frac{n}{4}) + n^3(1 + \frac{1}{4}) \\ &= 4(2T(\frac{n}{8}) + (\frac{n}{4})^3) + n^3(1 + \frac{1}{4}) = 2^3T(\frac{n}{2^3}) + n^3(1 + \frac{1}{4} + \frac{1}{4^2}) \\ &= ... \\ &= 2^iT(\frac{n}{2^i}) + n^3(1 + \frac{1}{4} + \frac{1}{4} +  ... + \frac{1}{4^{i-1}}) \\ &= nT(1) + n^3 \sum_{i=1}^{lgn}{\frac{1}{4^{i-1}}} \\ &= c_1n + c_2n^3  \\ &= \Theta(n^3)
+\end{align*}
+
+\item $T(n) = T(\sqrt{n}) + 1$
+\\ Rename: $m = lgn \to n = 2^m$
+\\ $T(2^m) = T(2^{m/2}) + 1$
+\\ Rename: $S(m) = T(2^m)$
+
+\begin{align*}
+S(m) &= S(m/2) + 1 \\
+	 &= S(m/4) + 2 \\
+	 &= S(m/2^i) + i \\
+	 &= \hdots \\
+	 &= S(1) + lgm \\
+	 &= \Theta(lgm)
+\end{align*}
+\\ $S(m) = S(m/2) + 1 = \Theta(lgm)$
+\\ 
+\\ $T(n) = T(2^m) = S(m) = \Theta(lgm) = \Theta(lglgn)$
+
+\item $T(n) = 3T(\frac{n}{2}) + nlgn$
+\\ \textit{Master's method:}
+$a = 3, b = 2, f(n) = nlgn$.
+\par Compare $n^{\log_b a} \approx n^{1.58}$ and $nlgn$, for some constant $\epsilon > 0$:
+
+\begin{equation*}
+f(n) = nlgn = O(n^{1.58 - \epsilon})
+\end{equation*}
+$\to$ Case 1:
+\begin{equation*}
+ T(n) = \Theta(n^{\log_2 3})
+\end{equation*}
+
+
+\end{itemize}
+
+\item
+
+\begin{itemize}
+
+\item Draw the recursion tree for $T(n) = T(n/4) + T(n/2) + n^2$ and provide a tight asymptotic bound on its solution.
+
+
+\begin{tikzpicture}[level/.style={sibling distance=60mm/#1}]
+\node [circle,draw] (z){$n^2$}
+  child {node [] (a) {$(\frac{n}{4})^2$}
+    child {node [] (b) {$(\frac{n}{4^2})^2$}
+      child {node {$\vdots$}
+        child {node [] (d) {$T(1)$}}
+        child {node [] (e) {$T(2)$}}
+      } 
+      child {node {$\vdots$}}
+    }
+    child {node [] (g) {$(\frac{n}{8})^2$}
+      child {node {$\vdots$}}
+      child {node {$\vdots$}}
+    }
+  }
+  child {node [] (j) {$(\frac{n}{2})^2$}
+    child {node [] (k) {$(\frac{n}{8})^2$}
+      child {node {$\vdots$}}
+      child {node {$\vdots$}}
+    }
+  child {node [] (l) {$(\frac{n}{4})^2$}
+    child {node {$\vdots$}}
+    child {node (c){$\vdots$}
+      child {node [] (o) {$\vdots$}
+      	child {node [] (or) {$\vdots$}}
+      	child {node [] (ol) {$\vdots$}}
+      	}
+      child {node [] (p) {$\vdots$}
+      	child {node [] (pr) {$T(1)$}}
+      	child {node [] (pl) {$T(2)$}
+			child [grow=right] {node (q) {$(\frac{5}{16})^Mn^2$} edge from parent[draw=none]
+				child [grow=up] {node (r) {$(\frac{5}{16})^{M-1}n^2$} edge from parent[draw=none]
+					child [grow=up] {node (r1) {$\hdots$} edge from parent[draw=none]
+						child [grow=up] {node (r) {$(\frac{5}{16})^2n^2$} edge from parent[draw=none]
+							child [grow=up] {node (r) {$(\frac{5}{16})^1n^2$} edge from parent[draw=none]
+								child [grow=up] {node (r) {$(\frac{5}{16})^0n^2$} edge from parent[draw=none]
+									child [grow=up] {node (r) {\textbf{Total Cost}} edge from parent[draw=none]}
+								}
+							}
+						}
+					}		
+				}
+			}      	
+      	}      
+      }
+    }
+  }
+};
+
+\end{tikzpicture}
+\par Unbalanced tree, left branch ends sooner. Tight bound is a new balanced tree with the left branch replaced by the reflection of the old right branch.
+\begin{align*}
+T(n) \leq n^2 (1 + (\frac{5}{16})^2 + ... + (\frac{5}{16})^M)
+\end{align*}
+With:
+\begin{equation*}
+\frac{n}{2^M} = 2
+\end{equation*}
+Because $\frac{5}{16} < 1$, we have:
+\begin{align*}
+T(n) &\leq n^2 (1 + (\frac{5}{16})^2 + ... + (\frac{5}{16})^M) \\
+     &\leq n^2\frac{1}{1-\frac{5}{16}} \\
+     &= \mathbf{O(n^2)}
+\end{align*}
+
+
+\item Use the iteration method to solve the following recurrence:
+\\ $T(n) = 4T(n/2) + n$
+\\ Assume: $n = 2^k$
+\begin{align*}
+T(n) &= 4T(n/2) + n \\
+&= 4(4T(n/2^2) + n/2) + n \\
+&= 4^2T(\frac{n}{2^2}) + 4\frac{n}{2} + n \\
+&= 4^3T(\frac{n}{2^3}) + 4^2\frac{n}{2^2} +  4\frac{n}{2} + n \\
+&= \hdots \\
+&= 4^iT(\frac{n}{2^i}) + n(1 + 2^1 + ... + 2^{i-1}) \\
+&= \hdots \\
+&= 4^{lgn}T(1) + n\sum_{i=0}^{lgn-1}2^i \\
+&= n^2T(1) + n(n - 1) \\
+&= \mathbf{\Theta(n^2)}
+\end{align*}
+
+
+\end{itemize}
+
+\item Considering the following recursive algorithm:
+\\\textbf{ALGORITHM Q(n)}
+\par //Input: A positive integer n
+\\\textbf{if} $n=1$
+\par \quad return 1
+\par \textbf{else}
+\par \quad return \textbf{Q(n-1) + 2n - 1}
+
+\begin{itemize}
+\item Set up a recurrence relation for this function's value and solve it to determine what this algorithm computes:
+Recurrence relation:
+\begin{align*}
+Q(n) &= Q(n-1) + 2n-1 \: \text{With} \: \forall n > 1 \\
+Q(1) &= 1
+\end{align*}
+Solve it:
+\begin{align*}
+Q(n) &= Q(n-1) + 2n-1 \: \text{With} \: \forall n > 1 \\
+     &= 1 + 3 + 5 + ... + 2n - 1 \\
+     &= \mathbf{n^2 }
+\end{align*}
+
+\item Set up a recurrence relation for the number of multiplications made by this algorithm and solve it.
+
+\par \textbf{ALGORITHM Q(n)}
+\par //Input: A positive integer n
+\par \textbf{if} $n=1$
+\par \quad return 1
+\par \textbf{else}
+\par \quad return \textbf{Q(n-1) + 2n - 1}
+\par Recurrence relation for the number of multiplications:
+\begin{align*}
+M(1) &= 0 \\
+M(n) &= M(n-1) + c
+\end{align*}
+\par Solve it:
+\begin{align*}
+M(n) &= M(n-1) + 1 \\
+	 &= M(1) + (n-1)1 \\
+	 &= \mathbf{\Theta(n)}
+\end{align*}
+The total number of multiplications made: $\mathbf{M(n) = n - 1}$
+
+
+\end{itemize}
+
+\item Consider the following algorithm.
+
+\par \textbf{ALGORITHM} \textit{Mystery}(n)
+\par //Input: A non-negative integer n
+\par $S \gets 0$
+\par \textbf{for} $i \gets 1$ \textbf{to} n \textbf{do}
+\par \quad $S \gets S + i*i$
+\par \textbf{return} S
+
+\begin{itemize}
+\item What does this algorithm compute?
+\begin{center}
+$\mathbf{\sum_{i=1}^ni^2}$
+\end{center}
+\item Compute the running time of this algorithm.
+
+$S \gets 0$        [Cost: c1, Times: 1] \\
+\textbf{for} $i \gets 1$ \textbf{to} n \textbf{do} [Cost: c2, Times: n + 1]
+\par \quad $S \gets S + i*i$ [Cost: c3, Times: n] \\
+\textbf{return} S [Cost:c4, Times:1]
+\\ \\ Total cost: $c1 + c2 \times (n+1) + c3 \times n + c4 = \mathbf{\Theta(n)} $
+\end{itemize}
+
+\end{enumerate}
+
+
+\end{document}

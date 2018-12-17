@@ -1,0 +1,210 @@
+\documentclass[[11pts]{report}
+
+\usepackage{qtree}
+\usepackage{listings}
+\usepackage{amsmath,mathtools}
+
+\title{CS 677 Homework \\ Assignment 01}
+\date{Semtember 4, 2018}
+\author{Hai Nguyen}
+
+\setlength{\topmargin}{-1cm}
+\setlength{\oddsidemargin}{0in}
+\setlength{\textwidth}{6.5in}
+\setlength{\textheight}{8.3in}
+
+\DeclareMathOperator{\Div}{div}
+\newcommand{\vect}[1]{\mathbf{#1}}
+
+
+
+
+%%Currently default settings for indentation and symbols.
+%%Try these by uncommenting this block!!!
+%%Redefine the first level symbols
+%\renewcommand{\theenumi}{\fnsymbol{enumi}-}
+%\renewcommand{\labelenumi}{\theenumi}
+%
+%%Redefine the second level symbols
+%\renewcommand{\theenumii}{\alph{enumii})}
+%\renewcommand{\labelenumii}{\theenumii}
+%
+%%Redefine the third level symbols
+%\renewcommand{\theenumiii}{\roman{enumiii}.}
+%\renewcommand{\labelenumiii}{\theenumiii}
+%
+%%Options for redefining levels
+
+
+%\arabic
+%\alph 
+%\Alph
+%\roman
+%\Roman
+%\fnsymbol
+%This ^^^ is all you need to change!!
+
+\begin{document}
+
+\maketitle
+
+\begin{enumerate}
+
+\item Arrange the list of functions in ascending order of growth rate:
+
+$f_1(n) = (n-1)!$
+\\ $f_2(n) = 5lg(n + 100)^n$
+\\ $f_3(n) = 2^{2n}$
+\\ $f_4(n) = 0.001n^4 + 3n^3 + 1$
+\\ $f_5(n) = ln^2n$ 
+\\ $f_6(n) = \sqrt[3] {n}$
+\\ $f_7(n) = 3^n$
+\\ Ascending order:
+$f_5(n) < f_6(n) < f_2(n) < f_4(n) < f_7(n) < f_3(n) < f_1(n)$ 
+
+\item Using the informal definition for the $\Theta$ notation, select the correct notation for the following expression:
+
+\begin{enumerate}
+
+\item $2(lgn)^2 + 4n + 3n^2lgn = \Theta(n^2lgn)$
+
+\item $(6n^3lgn + 4)(10+n) = \Theta(n^4lgn)$
+
+\item $\frac{(n^2+lgn)(n+1)}{n+n^2} = \Theta(n)$
+
+\item $ 2 + 4 + 8 + 16 + ... + 2^n = \Theta(2^n)$
+
+\item $8^{lgn} = \Theta(n^3)$
+\end{enumerate}
+
+\item Using mathematical induction, show that the following relations are true for every $n \geq 1$
+
+\begin{enumerate}
+
+\item $\sum_{i=1}^{n}(-1)^{(i+1)}i^2 = \frac{(-1)^{n+1}n(n+1)}{2}$
+\\ \\
+\textit{Base case:} 
+$n=1: (-1)^2\times1^2 = \frac{(-1)^{1+1}1(1+1)}{2}$ \textit{(True)} \\
+\textit{Inductive case:} \\ \\
+\textit{Assume:} $\sum_{i=1}^{n}(-1)^{(i+1)}i^2 = \frac{(-1)^{n+1}n(n+1)}{2}$ is True
+\\ \\ \textit{Prove:} $\sum_{i=1}^{n+1}(-1)^{(i+1)}i^2 = \frac{(-1)^{n+2}(n+1)(n+2)}{2}$
+ \\ \\ $\to \sum_{i=1}^{n}(-1)^{(i+1)}i^2 + (-1)^{n+2}(n+1)^2 =  \frac{(-1)^{n+2}(n+1)(n+2)}{2} $ 
+\\ \\ $\to \frac{(-1)^{n+1}n(n+1)}{2} + (-1)^{n+2}(n+1)^2 =  \frac{(-1)^{n+2}(n+1)(n+2)}{2} $ 
+\\ \\  $\to (-1)^{n+1}(n+1)(\frac{n}{2} + (-1)(n+1)) = \frac{(-1)^{n+2}(n+1)(n+2)}{2} $ 
+\\ \\  $\to (-1)^{n+1}(n+1)(\frac{n-2n-2}{2}) = \frac{(-1)^{n+2}(n+1)(n+2)}{2} $
+\\ \\ $\to  \frac{(-1)^{n+2}(n+1)(n+2)}{2} = \frac{(-1)^{n+2}(n+1)(n+2)}{2} $ \textit{(True)}
+
+\item $\sum_{i=1}^{n}\frac{1}{(2i-1)(2i+1)} = \frac{n}{2n+1}$
+\\ \\
+\textit{Base case:} $n = 1: \frac{1}{1\times3} = \frac{1}{2\times1 + 1}$ \textit{(True)}
+
+\textit{Inductive case:}
+\\ \\
+\textit{Assume:} $\sum_{i=1}^{n}\frac{1}{(2i-1)(2i+1)} = \frac{n}{2n+1}$ is True
+\\ \\
+\textit{Prove:} $\sum_{i=1}^{n+1}\frac{1}{(2i-1)(2i+1)} = \frac{n+1}{2n+3}$ \\
+
+$\to \sum_{i=1}^{n}\frac{1}{(2i-1)(2i+1)} + \frac{1}{(2n+1)(2n+3)} = \frac{n+1}{2n+3}$ \\
+
+$\to \frac{n}{2n+1} + \frac{1}{(2n+1)(2n+3)} = \frac{n+1}{2n+3}$ \\
+
+$\to \frac{n(2n+3) + 1}{(2n+1)(2n+3)} = \frac{n+1}{2n+3}$ \\
+
+$\to \frac{(n+1)(2n+1)}{(2n+1)(2n+3)} = \frac{n+1}{2n+3}$ \\
+
+$\to \frac{n+1}{2n+3} = \frac{n+1}{2n+3}$ \textit{(True)} \\
+
+
+
+
+
+\end{enumerate}
+
+\item Using the formal definition of the asymptotic notations, prove the following statements:
+\begin{enumerate}
+\item $10n^2 + 1 \in O(n^3)$
+
+Prove with $\exists c, n_0, \forall n \geq n_0$:
+\begin{equation}
+ 10n^2 + 1 \leq cn^3
+\label{eq1}
+\end{equation}
+
+We have:
+
+\begin{equation}
+10n^2 + 1 \leq 10n^3 + n^3 = 11n^3
+\label{eq2}
+\end{equation}
+
+In order to satisfy Inequation \ref{eq1}, from Inequation \ref{eq2} we can choose $c = 11, n_0 = 1$.
+
+\item $5n^2 + 10 \in \Omega(n)$
+
+Prove with $\exists c, n_0, \forall n \geq n_0$:
+\begin{equation}
+5n^2 + 1 \geq cn
+\label{eq3}
+\end{equation}
+
+We have:
+
+\begin{equation}
+5n^2 + 1 \geq 5n^2 \geq 5n
+\label{eq4}
+\end{equation}
+
+In order to satisfy Inequation \ref{eq3}, from Inequation \ref{eq4} we can choose $c = 5, n_0 = 1$.
+
+\end{enumerate}
+
+
+\item Extra
+
+\begin{itemize}
+\item Find the order of growth for the following sum: $\sum_{i=1}^{n-1}(i+2)^2$
+\\ We have:
+
+\begin{equation*}
+\sum_{i=1}^{n-1}(i+2)^2 = \sum_{i=1}^{n-1}{(i^2 + 4i + 4)} = \sum_{i=1}^{n-1}i^2 + 4\sum_{i=1}^{n-1}i + 4(n-1) = \frac{(n-1)n(2n-1)}{6} + 4\frac{(n-1)n}{2} + 4(n-1) = \Theta(n^3)
+\end{equation*}
+
+\item Use the formal definition of the asymptotic notation to prove that:
+
+\begin{equation}
+30n^2 + 100 \notin \Omega(n^3)
+\label{eq0}
+\end{equation}
+
+Assume: 
+\begin{equation*}
+30n^2 + 100 \in \Omega(n^3)
+\end{equation*}
+
+It means $\exists c, n0$ so that with $\forall n \geq n0$:
+\begin{equation}
+30n^2 + 100 \geq cn^3
+\label{eq5}
+\end{equation}
+
+We have:
+\begin{equation}
+30n^2 + 100 \leq 30n^2 + 100n^2 = 130n^2
+\label{eq6}
+\end{equation}
+
+From Inequation \ref{eq5} and \ref{eq6}:
+
+\begin{equation}
+cn^3 \leq 130n^2 \to n \leq \frac{130}{c}
+\label{eq7}
+\end{equation}
+
+Inequation \ref{eq7} cannot satisfy with $\forall n \geq n0$ so \ref{eq0} holds True.
+
+\end{itemize}
+
+\end{enumerate}
+
+
+\end{document}

@@ -1,0 +1,410 @@
+\documentclass[11pts]{report}
+
+\usepackage{qtree}
+\usepackage{listings}
+\usepackage{amsmath,mathtools}
+\usepackage[ruled,longend]{algorithm2e}
+\usepackage{tikz}
+\usepackage{listings}
+\usepackage{xcolor}
+\lstset{
+    frame=tb, % draw a frame at the top and bottom of the code block
+    tabsize=4, % tab space width
+    showstringspaces=false, % don't mark spaces in strings
+    commentstyle=\color{green}, % comment color
+    keywordstyle=\color{blue}, % keyword color
+    stringstyle=\color{red} % string color
+}
+
+\title{CS 677 Homework \\ Assignment 03}
+\date{Semtember 18, 2018}
+\author{Hai Nguyen}
+
+\setlength{\topmargin}{-1cm}
+\setlength{\oddsidemargin}{0in}
+\setlength{\textwidth}{6.5in}
+\setlength{\textheight}{8.3in}
+
+\DeclareMathOperator{\Div}{div}
+\newcommand{\vect}[1]{\mathbf{#1}}
+
+
+
+
+%%Currently default settings for indentation and symbols.
+%%Try these by uncommenting this block!!!
+%%Redefine the first level symbols
+%\renewcommand{\theenumi}{\fnsymbol{enumi}-}
+%\renewcommand{\labelenumi}{\theenumi}
+%
+%%Redefine the second level symbols
+%\renewcommand{\theenumii}{\alph{enumii})}
+%\renewcommand{\labelenumii}{\theenumii}
+%
+%%Redefine the third level symbols
+%\renewcommand{\theenumiii}{\roman{enumiii}.}
+%\renewcommand{\labelenumiii}{\theenumiii}
+%
+%%Options for redefining levels
+
+
+%\arabic
+%\alph 
+%\Alph
+%\roman
+%\Roman
+%\fnsymbol
+%This ^^^ is all you need to change!!
+
+\begin{document}
+
+\maketitle
+
+\begin{enumerate}
+
+% Question 1
+\item Consider the following recursive algorithm.
+
+\textbf{ALGORITHM} \textit{Enigma}(A[0..n-1])
+\\//Input: An array A[0..n-1] of integer number
+\par \textbf{for} $i \gets 0$ \textbf{to} n - 2 \textbf{do}
+\par \quad \textbf{for} $j \gets i+1$ \textbf{to} n - 1 \textbf{do}
+\par \quad \quad \textbf{if} $A[i] == A[j]$
+\par \quad \quad \quad \textbf{return false}
+\par \textbf{return true}
+
+\begin{enumerate}
+
+\item What does this algorithm do?
+\par Check for 2 duplicate elements within an array of integer numbers. If there is at least two duplicate elements, the algorithm returns False, otherwise returns True.
+
+\item Compute the running time of this algorithm.
+
+\textbf{ALGORITHM} \textit{Enigma}(A[0..n-1])
+\par \textbf{for} $i \gets 0$ \textbf{to} n - 2 \textbf{do} \textit{[Cost c1, n times]}
+\par \quad \textbf{for} $j \gets i+1$ \textbf{to} n - 1 \textbf{do} \textit{[Cost c2, n - i times]}
+\par \quad \quad \textbf{if} $A[i] == A[j]$ \textit{[Cost c3, n - i - 1 times, worst case]}
+\par \quad \quad \quad \textbf{return false}
+\par \textbf{return true}
+\par Total cost:
+\begin{align*}
+T(n) &\leq c_1n + \sum_{i=0}^{n-2}(n-i) + \sum_{i=0}^{n-2}(n-i-1) \\
+	 &= c_1n + \sum_{k=2}^{n}k + \sum_{k=1}^{n-1}k \\
+	 &= O(n^2)
+\end{align*}
+\end{enumerate}
+
+\item 
+
+\begin{enumerate}
+\item Implement in C/C++ a version of bubble sort that alternates left-to-right and right-to-left passes through the data.
+
+Source code:
+\begin{lstlisting}
+#include <stdio.h>
+
+int numComp = 0;
+ 
+void swap(int *xp, int *yp)
+{
+    int temp = *xp;
+    *xp = *yp;
+    *yp = temp;
+}
+
+/* Function to print an array */
+void printArray(int arr[], int size)
+{
+    int i;
+    for (i=0; i < size; i++)
+        printf("%c ", arr[i]);
+}
+
+void bubbleSort(int arr[], int n)
+{
+   int i, j;
+   int leftStartIdx = 1;
+   int rightStartIdx = n; 
+
+   while (leftStartIdx < rightStartIdx)
+   {
+       // Left2Right pass
+         for (j = leftStartIdx; j <= rightStartIdx - 1; j++)
+         {
+            numComp++;
+
+            if (arr[j-1] > arr[j])
+            {
+               swap(&arr[j], &arr[j-1]);
+            }
+         }
+        
+
+        rightStartIdx  -= 1;
+
+
+        printf("Left2Right pass: ");
+        printArray(arr, n);
+        printf("\n");        
+
+        if (leftStartIdx >= rightStartIdx)
+        	break;
+
+        // Right2Left pass
+         for (j = rightStartIdx - 1; j >= leftStartIdx; j--)
+         {
+            numComp++;
+
+            if (arr[j - 1] > arr[j])
+            {
+               swap(&arr[j - 1], &arr[j]);
+
+            }
+         }
+         
+         printf("Right2Left pass: ");
+         printArray(arr, n);
+         printf("\n");
+
+         if (leftStartIdx >= rightStartIdx)
+    		  break;
+
+    	leftStartIdx += 1;
+   }
+}
+ 
+int main()
+{
+    int arr[] = {'E', 'A', 'S', 'Y', 'Q', 'U', 'E', 'S', 'T', 'I', 'O', 'N'};
+    int n = sizeof(arr)/sizeof(arr[0]);
+    bubbleSort(arr, n);
+    return 0;
+}
+
+\end{lstlisting}
+\par 
+\par
+Outputs:
+
+\begin{lstlisting}
+Left2Right pass: A E S Q U E S T I O N Y 
+Right2Left pass: A E E S Q U I S T N O Y 
+Left2Right pass: A E E Q S I S T N O U Y 
+Right2Left pass: A E E I Q S N S T O U Y 
+Left2Right pass: A E E I Q N S S O T U Y 
+Right2Left pass: A E E I N Q O S S T U Y 
+Left2Right pass: A E E I N O Q S S T U Y 
+Right2Left pass: A E E I N O Q S S T U Y 
+Left2Right pass: A E E I N O Q S S T U Y 
+Right2Left pass: A E E I N O Q S S T U Y 
+Left2Right pass: A E E I N O Q S S T U Y 
+\end{lstlisting}
+
+\item How many comparisons does this modified version of bubble sort make?
+\begin{itemize}
+\item First Left2Right pass: We have n elements, and it takes us n - 1 comparisons
+\item First Right2Left pass: After the first left2right pass, we only have n-1 elements, and it takes us n - 2 comparisons
+\item We continue until we only have 2 elements and we only need to make 1 comparions
+\par Total comparisons needed:
+\begin{equation*}
+1 + 2 + 3 + \hdots + n - 1 = \frac{n(n-1)}{2}
+\end{equation*}
+\end{itemize}
+\end{enumerate}
+
+\item Non-recurisve merge sort
+\par Code:
+
+\begin{lstlisting}
+#include <stdio.h>
+
+void printArray(int arr[], int size, bool c = false)
+{
+    int i;
+    for (i=0; i < size; i++)
+    {
+        if (c)
+            printf("%c ", arr[i]);
+        else
+            printf("%d ,", arr[i]);
+    }
+    printf("\n");
+}
+
+void merge(int arr[], int l, int m, int r) 
+{ 
+    int i, j, k; 
+    int n1 = m - l + 1; 
+    int n2 =  r - m; 
+  
+    int L[n1], R[n2]; 
+  
+    for (i = 0; i < n1; i++) 
+        L[i] = arr[l + i]; 
+    for (j = 0; j < n2; j++) 
+        R[j] = arr[m + 1 + j]; 
+  
+    i = 0;  
+    j = 0; 
+    k = l; 
+    while (i < n1 && j < n2) 
+    { 
+        if (L[i] <= R[j]) 
+        { 
+            arr[k] = L[i]; 
+            i++; 
+        } 
+        else
+        { 
+            arr[k] = R[j]; 
+            j++; 
+        } 
+        k++; 
+    } 
+  
+    while (i < n1) 
+    { 
+        arr[k] = L[i]; 
+        i++; 
+        k++; 
+    } 
+  
+    while (j < n2) 
+    { 
+        arr[k] = R[j]; 
+        j++; 
+        k++; 
+    } 
+} 
+
+void nonRecursiveMerge (int arr [], int n)
+{
+    int m = 1;
+    int i = 0;
+    int minVal = 0;
+
+    while (m < n)
+    {
+        i = 0;
+        while (i < n - m)
+        {
+            minVal = (i + 2 * m - 1 < n - 1) ? (i + 2 * m - 1) : (n - 1);
+            merge(arr, i, i + m - 1, minVal);
+            i += 2*m;
+        }
+
+        printArray(arr, n, true);
+
+        m *= 2;
+    }
+}
+
+int main()
+{
+    int arr[] = {'A', 'S', 'O', 'R', 'T', 'I', 'N', 'G',
+     'E', 'X', 'A', 'M', 'P', 'L', 'E'};
+    int n = sizeof(arr)/sizeof(arr[0]);
+    nonRecursiveMerge(arr, n);
+    return 0;
+}
+\end{lstlisting}
+
+
+Output:
+\begin{lstlisting}
+A S O R I T G N E X A M L P E 
+A O R S G I N T A E M X E L P 
+A G I N O R S T A E E L M P X 
+A A E E G I L M N O P R S T X
+\end{lstlisting}
+
+
+\item Use a loop invariant to prove that the following algorithm computes $a^n$:
+
+\par Exp(a, n)
+\par \{
+\par \qquad i $\gets$ 1
+\par \qquad pow $\gets$ 1
+\par \qquad while (i $\leq$ n)
+\par \qquad \{
+\par \qquad \qquad pow $\gets$ pow*a
+\par \qquad \qquad i $\gets$ i + 1
+\par \qquad \}
+\par \qquad return pow
+\par \}
+
+\par Use the following loop invariant:
+\begin{equation*}
+\text{pow}_i = \text{a}^i
+\end{equation*}
+Prove the loop invariant:
+
+\begin{itemize}
+\item Initialization
+\par i = 0: $\text{pow}_0$ = $a^0$ = 1
+
+\item Maintenance:
+Assume that at the start of the i-th iteration $\text{pow}_i = \text{a}^i$
+\par Then, at the start of the (i+1)-th iteration we will have:
+$\text{pow}_{i+1} = \text{pow}_i\times a = \text{a}^{i+1}$
+\item Termination: The loop terminate when i = n. Thus after the loop execution we have:
+\begin{equation*}
+\text{pow}_n = \text{a}^n
+\end{equation*}
+
+\end{itemize}
+
+\item Consider another algorithm for solving the same problem as the one in Homework 2 (problem 1), which recursively divides an array into two halves (call Min2 (A[0...n-1])):
+
+\begin{enumerate}
+\item Set up a recurrence relation for the algorithm's basic operation count and solve it
+\par \textbf{ALGORITHM} \textit{Min2}(A[\textit{left}..\textit{right}])
+\par \quad \textbf{if} \textit{left = right}  \textbf{return} A\textit{[left]} \quad \textit{[Cost c1]}
+\par \quad \textbf{else} \textit{temp1} $\gets$ Min2(A[\textit{left}..(\textit{left} + \textit{right})/2) \textit{[Cost $Theta(n/2)$]}
+\par \quad \quad \textit{temp2} $\gets$ Min2(A[(\textit{left} + \textit{right})/2+1..\textit{right}) \textit{[Cost $Theta(n/2)$]}
+\par \quad \quad \textbf{if} \textit{temp1} $\leq$ \textit{temp2} \textbf{return} \textit{temp1} \textit{[Cost c2]}
+\par \quad \quad \textbf{else return} \textit{temp2} \textit{[Cost c3]}
+
+Recurrence relationship:
+
+\begin{equation*}
+  T(n)=\begin{cases}
+    c, & \text{if $n=1$}.\\
+    2T(n/2) + c, & \text{if n $>$ 1}.
+  \end{cases}
+\end{equation*}
+
+Solve it:
+\begin{align*}
+T(n) &= 2T(n/2) + c\\
+     &= 2^{lgn}T(1) + c\sum_{i=0}^{i=lgn-1}2^i \\
+     &= nT(1) + c(n-1)
+\end{align*}
+
+\item Which of the algorithms Min1 (from Homework 2) or Min2 is faster?
+
+\par Min1 algorithm:
+\par \textbf{ALGORITHM} \textit{Min1}(A[0..n-1])
+\par \textbf{if} n = 1 return A[0]  \quad [Constant time c1]
+\par\textbf{else} \textit{temp} $\gets$ \textit{Min1}(A[0..n-2])  \quad  [c2 + T(n-1)]
+\par \quad \quad \textbf{if} \textit{temp} $\leq$ A[n-1] \textbf{return} \textit{temp} \quad [Constant time c3]
+\par \quad  \quad \textbf{else} \textbf{return} A[n-1] \quad [Constant time c4]
+\par Recurrence relationship:
+\begin{align*}
+T(1) &= c1 \\
+T(n) &= c + T(n-1)
+\end{align*}
+
+Solve it:
+\begin{align*}
+T(n) &= c + T(n-1) \\
+     &= T(1) + (n-1)c \\
+     &= \Theta(n)
+\end{align*}
+Both algorithms are $\Theta(n)$ so they are equal, however Min1 uses less assignments.
+
+
+\end{enumerate}
+
+\end{enumerate}
+\end{document}
